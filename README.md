@@ -1,6 +1,6 @@
 # 🎬 mpv 播放器部署与配置还原指南
 
-> **版本**：v3.3（uosc 与 ModernX 共存架构 + 全量中文注释版）
+> （uosc 与 ModernX 共存架构 + 全量中文注释版）
 > **适用平台**：Windows 主推（兼顾 macOS / Linux 跨平台）
 > **核心设计**：ModernX 全面负责主界面交互 + uosc 专精右键功能菜单
 
@@ -11,9 +11,10 @@
 - [二、 零基础部署与还原步骤](#二-零基础部署与还原步骤)
 - [三、 功能上线验证清单](#三-功能上线验证清单)
 - [四、 全局快捷键速查表](#四-全局快捷键速查表)
-- [五、 配置文件职能速查](#五-配置文件职能速查)
-- [六、 进度条主题色库（BGR 格式）](#六-进度条主题色库bgr-格式)
-- [七、 跨平台与日常维护指南](#七-跨平台与日常维护指南)
+- [五、 脚本职能速查表](#五-脚本职能速查表)
+- [六、 配置文件职能速查](#六-配置文件职能速查)
+- [七、 进度条主题色库（BGR 格式）](#七-进度条主题色库bgr-格式)
+- [八、 跨平台与日常维护指南](#八-跨平台与日常维护指南)
 
 ---
 
@@ -42,6 +43,13 @@
 * **超高清区间（`width ≥ 2560`）**：自动关闭去色带，完整保留 2K/4K 原盘高码率原生细节与纹理。
 * **低清老旧视频（`height ≤ 720`）**：自动提升抗振铃（Anti-ringing）系数至 `0.8`，有效抑制压缩杂讯与边缘光晕。
 
+### 3. 音频专项：频谱可视化与音视频独立配置
+* **有封面音频**：自动居中展示内嵌封面或同目录封面图，按 `audio_scale_height` 缩放。
+* **无封面音频**：`visualizer.lua` 自动挂载 `showcqtbar` 滤镜，渲染音阶标尺彩虹频谱。
+* **音视频独立音量**：`volume_fix.lua` 按文件类型分别应用 `audio_vol` / `video_vol`。
+* **拖动进度条防刺耳**：`quack.lua` 在拖动时自动降低音量，松手后平滑恢复。
+* **窗口标题自定义**：`title_filename.lua` 读取 `title_filename.conf`，默认显示内嵌标题（无则回退文件名）。
+
 ---
 
 ## 二、 零基础部署与还原步骤
@@ -58,10 +66,11 @@
 由于缩略图依赖后台静默调用 mpv 进程，换电脑或修改安装路径后必须核实该项：
 * 打开 `portable_config\script-opts\thumbfast.conf`。
 * 确认 `mpv_path=` 指向当前设备上的实际绝对路径，或者配置为自动检测：
-  ```ini
-  mpv_path=D:\Data\Player\mpv\mpv.exe
-  # 或直接填写：mpv_path=mpv
-  ```
+
+```ini
+mpv_path=D:\Data\Player\mpv\mpv.exe
+# 或直接填写：mpv_path=mpv
+```
 
 ### 4. （可选）关联文件格式
 * 以管理员身份运行 mpv 目录下的 `mpv-register.bat` 即可一键绑定系统常见媒体格式。
@@ -79,6 +88,8 @@
 * [ ] **缩略图预览**：光标在进度条上方任意滑动，悬停位置的缩略图能够秒级渲染且无报错弹窗。
 * [ ] **uosc 悬浮菜单**：点击鼠标右键或按 <kbd>Tab</kbd> 键，半透明菜单正常展示且文字为简体中文。
 * [ ] **音量与辅助指示**：屏幕右侧垂直音量条调节正常，暂停时中央有闪烁暂停标，流媒体缓冲有旋转图标。
+* [ ] **拖动防刺耳**：按住进度条拖动时音量自动降低，松手后平滑恢复，无刺耳爆音。
+* [ ] **窗口标题**：标题栏显示内容与 `title_filename.conf` 中 `title_format` 配置一致（默认显示内嵌标题，无则回退文件名）。
 * [ ] **动态 Profile 触发**：
   * 播放 1080P 片源时，按 <kbd>Shift</kbd> + <kbd>i</kbd> 切至第 4 页可观察到 `Mid-Resolution-Deband` 预设处于激活状态。
   * 播放 4K 原盘片源时，去色带自动关闭。
@@ -113,7 +124,26 @@
 
 ---
 
-## 五、 配置文件职能速查
+## 五、 脚本职能速查表
+
+`portable_config/scripts/` 下所有 Lua 脚本的职责与配置文件对应关系：
+
+| 脚本 | 对应配置 | 核心职责 |
+| :--- | :--- | :--- |
+| **`uosc/main.lua`** | `script-opts/uosc.conf` | uosc 框架入口，负责右键菜单、播放列表、轨道选择等交互 |
+| **`modernx.lua`** | `script-opts/osc.conf` | ModernX 主界面渲染，负责底部进度条、控制栏、顶部标题 |
+| **`thumbfast.lua`** | `script-opts/thumbfast.conf` | 后台子进程生成进度条悬停缩略图 |
+| **`autoload.lua`** | `script-opts/autoload.conf` | 自动扫描同目录文件并加入播放列表 |
+| **`playlistmanager.lua`** | `script-opts/playlistmanager.conf` | 播放列表管理器，支持排序、反转、随机、保存/加载 |
+| **`visualizer.lua`** | `script-opts/visualizer.conf` | 纯音频播放时渲染 CQT 频谱可视化 |
+| **`volume_fix.lua`** | `script-opts/volume_fix.conf` | 按文件类型应用独立音量与音频专属渲染设置 |
+| **`quack.lua`** | `script-opts/quack.conf` | 拖动进度条时自动降低音量，避免音频重启爆音 |
+| **`title_filename.lua`** | `script-opts/title_filename.conf` | 自定义窗口标题格式，支持 UTF-8 截断 |
+| **`stats.lua`** | `script-opts/stats.conf` | 性能统计面板（通常为 mpv 内置，无需额外下载） |
+
+---
+
+## 六、 配置文件职能速查
 
 | 配置文件 | 相对路径 | 核心管理职责 |
 | :--- | :--- | :--- |
@@ -124,12 +154,15 @@
 | **`thumbfast.conf`** | `script-opts/` | 缩略图生成上限尺寸、静默调用进程绑定及网络流媒体缩略图开关 |
 | **`visualizer.conf`** | `script-opts/` | 音频可视化类型选择、渲染画质分级、高度占比与启用条件 |
 | **`volume_fix.conf`** | `script-opts/` | 视频与音频独立音量初值设定、纯音频模式封面渲染上限尺寸 |
-| **`stats.conf`** | `script-opts/` | 性能统计面板悬浮停留时间及避让 uosc 顶栏的边距控制 |
+| **`quack.conf`** | `script-opts/` | 拖动进度条时的降音幅度（`duckratio`）与恢复时长（`ducksecs`） |
+| **`title_filename.conf`** | `script-opts/` | 窗口标题格式（`title_format`）与 UTF-8 截断参数 |
+| **`playlistmanager.conf`** | `script-opts/` | 播放列表管理器行为（排序、缩略名、自定义按键等） |
 | **`autoload.conf`** | `script-opts/` | 目录递归深度、连播媒体格式白名单与文件隐藏过滤规则 |
+| **`stats.conf`** | `script-opts/` | 性能统计面板悬浮停留时间及避让 uosc 顶栏的边距控制 |
 
 ---
 
-## 六、 进度条主题色库（BGR 格式）
+## 七、 进度条主题色库（BGR 格式）
 
 ModernX 界面颜色遵循 **BGR（蓝-绿-红）** 排序，与传统 Web 端的 RGB 完全相反（例如网页 RGB 紫色 `#9933FF` 在配置中须转换为 `FF3399`）。
 
@@ -152,12 +185,12 @@ ModernX 界面颜色遵循 **BGR（蓝-绿-红）** 排序，与传统 Web 端�
 
 ---
 
-## 七、 跨平台与日常维护指南
+## 八、 跨平台与日常维护指南
 
 1. **跨系统部署与平台微调**：
    * **Windows 平台**：强制保留 `gpu-api=d3d11` 以获得最佳的资源开销与流畅度。
    * **macOS / Linux 平台**：在 `mpv.conf` 中将 `gpu-api=d3d11` 改为 `gpu-api=vulkan` 或直接注释该行。
-   * **脚本通用性**：内置的 5 份核心 Lua 脚本均为标准跨平台实现，无需更动内部代码。
+   * **脚本通用性**：内置的 8 份核心 Lua 脚本均为标准跨平台实现，无需更动内部代码。
 2. **驱动更新维护**：
    * 每次显卡驱动重装或更新后，建议进入显卡控制面板重新确认 `mpv.exe` 是否维持“固定刷新”与“最高性能优先”策略。
 3. **软解与硬解按需切换**：
