@@ -68,7 +68,7 @@
 * 确认 `mpv_path=` 指向当前设备上的实际绝对路径，或者配置为自动检测：
 
 ```ini
-mpv_path=D:\Data\Player\mpv\mpv.exe
+mpv_path=C:\mpv\mpv.exe
 # 或直接填写：mpv_path=mpv
 ```
 
