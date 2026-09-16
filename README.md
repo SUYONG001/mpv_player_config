@@ -1,6 +1,6 @@
 # 🎬 mpv 播放器部署与配置还原指南
 
-> **版本**：v3.3（uosc 与 ModernX 共存架构 + 全量中文注释版）
+> （uosc 与 ModernX 共存架构 + 全量中文注释版）
 > **适用平台**：Windows 主推（兼顾 macOS / Linux 跨平台）
 > **核心设计**：ModernX 全面负责主界面交互 + uosc 专精右键功能菜单
 
