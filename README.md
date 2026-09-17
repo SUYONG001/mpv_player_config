@@ -153,7 +153,8 @@ mpv_path=C:\mpv\mpv.exe
 * [ ] **窗口标题**：标题栏显示内容与 `title_filename.conf` 中 `title_format` 配置一致（默认显示内嵌标题，无则回退文件名）。
 * [ ] **解码方式**：按 <kbd>i</kbd> 查看 `Video` 栏，确认当前视频使用的是硬解还是软解（参考 [1.4 节](#14-解码方式硬解与软解)）。两种方式均可正常播放。
 * [ ] **动态 Profile 触发**：
-  * 播放 1080P 片源时，按 <kbd>Shift</kbd> + <kbd>i</kbd> 切至第 4 页可观察到 `Mid-Resolution-Deband` 预设处于激活状态。
+  * 播放 1080P 片源时，按 <kbd>i</kbd> 后再按 <kbd>2</kbd> 切至帧时序页，若看到 `debanding (luma)` 或 `debanding (chroma)` 有耗时占比，说明 `Mid-Resolution-Deband` 预设已激活。
+  * 若想精确验证，可按 <kbd>~</kbd> 打开控制台，输入 `print(mp.get_property("deband"))`，返回 `yes` 即为激活，返回 `no` 即为未激活。
   * 播放 4K 原盘片源时，去色带自动关闭。
 * [ ] **纯音频播放专项**：
   * 播放 `.flac`、`.mp3`、`.wav` 等音频时，视频插值与升频后处理滤镜全自动注销卸载。
