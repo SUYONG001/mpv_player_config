@@ -43,7 +43,7 @@
   * **精准元素保留**：通过 `uosc.conf` 仅保留无边框细线边框（`window_border`）、右侧垂直音量滑块（`volume`）、流媒体缓冲旋转动画（`buffering_indicator`）及暂停闪烁图标（`pause_indicator`）。
   * **精准元素剔除**：强制禁用顶栏（`top_bar`）、进度条（`timeline`）、控制栏（`controls`）、空闲图标（`idle_indicator`）与音频指示（`audio_indicator`），彻底杜绝与 ModernX 发生视觉冲突。
 
-<img width="962" height="563" alt="视频预览" src="https://github.com/user-attachments/assets/109adaf0-dd9f-4ca9-9934-fdaa97cda615" />
+<img width="962" height="563" alt="视频预览 (2)" src="https://github.com/user-attachments/assets/ac583fd8-816c-4377-a05f-e3ba96890ceb" />
 
 
 > **实机效果预览 · 视频播放协同**：左侧为鼠标右键唤出的 **uosc 半透明深色菜单**（支持倍速、轨道、滤镜快速直选），底部为 **ModernX 罗兰电竞紫进度条与控制栏**，鼠标悬停在时间轴上时，由 **Thumbfast** 秒级拉起高清原画缩略图，整体界面清爽无重叠。
