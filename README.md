@@ -143,7 +143,8 @@ load-stats-overlay=no
 * 去掉 `#` 表示"启用该行设置"。
 * 想切回英文面板，只需重新在行首加上 `#` 即可。
 
-<img width="1200" height="675" alt="中文统计面板预览" src="请替换为中文面板预览图链接" />
+<img width="962" height="563" alt="中文统计面板" src="https://github.com/user-attachments/assets/67af903a-dce1-4dcc-85a9-86fefc967197" />
+
 
 > **实机效果预览 · 中文统计面板**：所有标签（文件、视频、音频、丢帧、硬解状态等）均为中文显示，顶部额外增加 CPU / GPU 实时占用率行，方便排查性能瓶颈。
 
