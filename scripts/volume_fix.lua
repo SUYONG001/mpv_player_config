@@ -2,7 +2,7 @@
 --  volume_fix.lua — 音视频独立配置
 -- ============================================================
 --  功能：
---  1. 音视频独立音量控制
+--  1. 音视频独立音量控制（支持通过 .conf 一键启用或禁用）
 --  2. 音频文件专属设置（封面、频谱、分辨率、算法关闭等）
 --  3. 音频缩放分辨率可通过 volume_fix.conf 中的 audio_scale_height 指定
 --  所有音频专属设置均通过 file-local-options 隔离，
@@ -10,10 +10,11 @@
 
 local opt = require 'mp.options'
 local opts = {
-    -- 默认值，会被 script-opts/volume_fix.conf 覆盖
+    -- 默认配置项，优先由 script-opts/volume_fix.conf 覆盖
+    enable_volume = false,
     audio_vol = 90,
     video_vol = 100,
-    -- 音频模式下的封面渲染目标高度（像素），1080 为默认值
+    -- 音频模式下的封面渲染目标高度（像素）
     audio_scale_height = 1080,
 }
 opt.read_options(opts, "volume_fix")
@@ -54,12 +55,12 @@ local function set_volume()
     if audio_exts[ext] then
         -- ============================================================
         --  音频文件专属设置
-        --  以下所有设置仅通过 file-local-options 作用于当前音频文件
-        --  不会对任何视频文件产生污染
         -- ============================================================
 
-        -- 独立音量
-        mp.set_property("file-local-options/volume", opts.audio_vol)
+        -- 仅在开启接管时设置固定音量，否则保留全局记忆音量
+        if opts.enable_volume then
+            mp.set_property("file-local-options/volume", opts.audio_vol)
+        end
 
         -- 强制显示窗口（频谱 / 封面需要渲染目标）
         mp.set_property("file-local-options/force-window", "yes")
@@ -70,8 +71,6 @@ local function set_volume()
         mp.set_property("file-local-options/audio-display-cover", "yes")
 
         -- 降低渲染分辨率，节省 GPU 资源
-        -- 高度由 volume_fix.conf 中的 audio_scale_height 指定
-        -- force_original_aspect_ratio=decrease：保持比例，仅在超出时缩小
         local scale_h = opts.audio_scale_height
         mp.set_property("file-local-options/vf",
             "scale=" .. scale_h .. ":" .. scale_h .. ":force_original_aspect_ratio=decrease")
@@ -92,8 +91,10 @@ local function set_volume()
         --  视频文件专属设置
         -- ============================================================
 
-        -- 独立音量
-        mp.set_property("file-local-options/volume", opts.video_vol)
+        -- 仅在开启接管时设置固定音量，否则保留全局记忆音量
+        if opts.enable_volume then
+            mp.set_property("file-local-options/volume", opts.video_vol)
+        end
     end
 end
 
