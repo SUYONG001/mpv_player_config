@@ -46,7 +46,8 @@
   * **精准元素保留**：通过 `uosc.conf` 仅保留无边框细线边框（`window_border`）、右侧垂直音量滑块（`volume`）、流媒体缓冲旋转动画（`buffering_indicator`）及暂停闪烁图标（`pause_indicator`）。
   * **精准元素剔除**：强制禁用顶栏（`top_bar`）、进度条（`timeline`）、控制栏（`controls`）、空闲图标（`idle_indicator`）与音频指示（`audio_indicator`），彻底杜绝与 ModernX 发生视觉冲突。
 
-<img width="962" height="563" alt="视频预览 (2)" src="[https://github.com/user-attachments/assets/ac583fd8-816c-4377-a05f-e3ba96890ceb](https://github.com/user-attachments/assets/ac583fd8-816c-4377-a05f-e3ba96890ceb)" />
+<img width="1922" height="1112" alt="视频预览" src="https://github.com/user-attachments/assets/4408a65b-13ae-4c80-91f9-fd8aa38e6ed7" />
+
 
 > **实机效果预览 · 视频播放协同**：左侧为鼠标右键唤出的 **uosc 半透明深色菜单**（支持倍速、轨道、滤镜快速直选），底部为 **ModernX 进度条与控制栏**，鼠标悬停在时间轴上时，由 **Thumbfast** 秒级拉起高清原画缩略图，整体界面清爽无重叠。
 
@@ -74,7 +75,8 @@
 * **拖动进度条防爆音**：内置进度寻道防刺耳抑制，跳转时主动平滑降噪，消除切换片段时的爆音现象。
 * **窗口标题自定义**：`title_filename.lua` 读取 `title_filename.conf`，默认显示内嵌标题（无则回退文件名）。
 
-<img width="482" height="293" alt="音频预览" src="[https://github.com/user-attachments/assets/2d2e779c-2b1c-4c0f-8b5a-aaf3ee19b6b9](https://github.com/user-attachments/assets/2d2e779c-2b1c-4c0f-8b5a-aaf3ee19b6b9)" />
+<img width="962" height="572" alt="音频预览" src="https://github.com/user-attachments/assets/117b87f6-84a1-48bb-a5c2-ebdd4cdfaaa2" />
+
 
 > **实机效果预览 · 音频频谱可视化**：播放无封面音频文件（如 `.wav`）时，`visualizer.lua` 自动挂载 `showcqtbar` 滤镜，以音阶（C/D/E/F/G/A/B）标尺动态呈现高精度彩虹频谱，同时底层自动切断无意义的画面插值与去色带计算，大幅节省 GPU 资源。
 
@@ -127,7 +129,8 @@ load-stats-overlay=no
 
 保存后**完全关闭 mpv 再重新打开**（热加载不会生效），按 <kbd>i</kbd> 即可看到中文面板。
 
-<img width="962" height="563" alt="中文统计面板" src="[https://github.com/user-attachments/assets/67af903a-dce1-4dcc-85a9-86fefc967197](https://github.com/user-attachments/assets/67af903a-dce1-4dcc-85a9-86fefc967197)" />
+<img width="1922" height="1112" alt="中文统计面板" src="https://github.com/user-attachments/assets/347a0cf2-d514-446b-aa8b-4fd730639ae1" />
+
 
 > **实机效果预览 · 中文统计面板**：所有标签（文件、视频、音频、丢帧、硬解状态等）均为中文显示，顶部额外增加 CPU / GPU 实时占用率行，方便排查性能瓶颈。
 
