@@ -46,6 +46,10 @@
   * **精准元素保留**：通过 `uosc.conf` 仅保留无边框细线边框（`window_border`）、右侧垂直音量滑块（`volume`）、流媒体缓冲旋转动画（`buffering_indicator`）及暂停闪烁图标（`pause_indicator`）。
   * **精准元素剔除**：强制禁用顶栏（`top_bar`）、进度条（`timeline`）、控制栏（`controls`）、空闲图标（`idle_indicator`）与音频指示（`audio_indicator`），彻底杜绝与 ModernX 发生视觉冲突。
 
+<img width="962" height="563" alt="视频预览 (2)" src="[https://github.com/user-attachments/assets/ac583fd8-816c-4377-a05f-e3ba96890ceb](https://github.com/user-attachments/assets/ac583fd8-816c-4377-a05f-e3ba96890ceb)" />
+
+> **实机效果预览 · 视频播放协同**：左侧为鼠标右键唤出的 **uosc 半透明深色菜单**（支持倍速、轨道、滤镜快速直选），底部为 **ModernX 进度条与控制栏**，鼠标悬停在时间轴上时，由 **Thumbfast** 秒级拉起高清原画缩略图，整体界面清爽无重叠。
+
 ### 1.2 分辨率自适应 Profile 与配置作用域
 
 > **什么是 Profile？**
@@ -66,9 +70,13 @@
 
 * **有封面音频**：自动居中展示内嵌封面或同目录封面图，按 `audio_scale_height` 缩放。
 * **无封面音频**：`visualizer.lua` 自动挂载 `showcqtbar` 滤镜，渲染音阶标尺彩虹频谱。
-* **音量持久化记忆**：`save-volume.lua`（或全局音量持久化逻辑）自动记忆退出时的音量状态，冷启动不重置。
+* **音量持久化记忆**：`save-volume.lua` 自动记忆退出时的音量状态，冷启动不重置。
 * **拖动进度条防爆音**：内置进度寻道防刺耳抑制，跳转时主动平滑降噪，消除切换片段时的爆音现象。
 * **窗口标题自定义**：`title_filename.lua` 读取 `title_filename.conf`，默认显示内嵌标题（无则回退文件名）。
+
+<img width="482" height="293" alt="音频预览" src="[https://github.com/user-attachments/assets/2d2e779c-2b1c-4c0f-8b5a-aaf3ee19b6b9](https://github.com/user-attachments/assets/2d2e779c-2b1c-4c0f-8b5a-aaf3ee19b6b9)" />
+
+> **实机效果预览 · 音频频谱可视化**：播放无封面音频文件（如 `.wav`）时，`visualizer.lua` 自动挂载 `showcqtbar` 滤镜，以音阶（C/D/E/F/G/A/B）标尺动态呈现高精度彩虹频谱，同时底层自动切断无意义的画面插值与去色带计算，大幅节省 GPU 资源。
 
 ### 1.4 解码方式：硬解与软解
 
@@ -82,6 +90,19 @@ mpv 支持两种视频解码方式，各有适用场景：
 | **兼容性** | 依赖显卡支持，老旧或冷门编码可能不支持 | 几乎支持所有格式 |
 | **画质** | 通常足够好，部分场景略逊于软解 | 理论最优，但差异通常难以察觉 |
 
+**如何查看当前是硬解还是软解？**
+
+* **方法一**：播放视频时按 <kbd>i</kbd> 调出统计面板，查看 `Video` 一栏。
+  * 若显示 `[nvdec]`、`[d3d11va]` 或带有 `hardware` 字样 → **硬解**
+  * 若只显示编码名称（如 `H.264 / AVC`）→ **软解**
+
+* **方法二**：按 <kbd>~</kbd> 打开控制台，输入以下命令并回车：
+  ```lua
+  print(mp.get_property("hwdec-current"))
+  ```
+  * 返回 `no` → **软解**
+  * 返回 `nvdec`、`d3d11va` 等 → **硬解**
+
 当前配置默认使用 `hwdec=auto-safe`，它会自动选择最稳妥的硬解接口（如 `d3d11va`），遇到不支持的格式则回退软解，兼顾兼容性与性能。
 
 ### 1.5 统计面板：英文 / 中文切换
@@ -91,7 +112,26 @@ mpv 支持两种视频解码方式，各有适用场景：
 本仓库额外提供了一份**中文增强版** `stats.lua`（含 CPU / GPU 实时占用率显示）。
 
 **启用方法：**
-打开 `portable_config/mpv.conf`，找到 `#load-stats-overlay=no`，去掉行首的 `#` 并保存，**完全重启 mpv 后**按 <kbd>i</kbd> 即可看到中文面板。
+
+打开 `portable_config/mpv.conf`，找到这一行：
+
+```ini
+#load-stats-overlay=no
+```
+
+去掉行首的 `#`，改为：
+
+```ini
+load-stats-overlay=no
+```
+
+保存后**完全关闭 mpv 再重新打开**（热加载不会生效），按 <kbd>i</kbd> 即可看到中文面板。
+
+<img width="962" height="563" alt="中文统计面板" src="[https://github.com/user-attachments/assets/67af903a-dce1-4dcc-85a9-86fefc967197](https://github.com/user-attachments/assets/67af903a-dce1-4dcc-85a9-86fefc967197)" />
+
+> **实机效果预览 · 中文统计面板**：所有标签（文件、视频、音频、丢帧、硬解状态等）均为中文显示，顶部额外增加 CPU / GPU 实时占用率行，方便排查性能瓶颈。
+
+> **注意**：启用中文版后，mpv 内置的英文面板会被禁用，两者不能同时生效。
 
 ### 1.6 网络串流与体验优化
 
@@ -201,6 +241,7 @@ mpv 支持两种视频解码方式，各有适用场景：
 | **`modernx.lua`** | `script-opts/osc.conf` | ModernX 主界面渲染，含网络流防白框补丁、底部进度条与控制栏 |
 | **`thumbfast.lua`** | `script-opts/thumbfast.conf` | 本地优先的快速缩略图生成器 |
 | **`autoload.lua`** | `script-opts/autoload.conf` | 自动扫描同目录文件并无缝加入连续播放列表 |
+| **`playlistmanager.lua`** | `script-opts/playlistmanager.conf` | 播放列表管理器，支持排序、反转、随机、保存/加载 |
 | **`visualizer.lua`** | `script-opts/visualizer.conf` | 纯音频播放时渲染高动态 CQT 彩虹柱状频谱 |
 | **`quack.lua`** | `script-opts/quack.conf` | 拖动进度条时平滑降音，消除爆音杂音 |
 | **`title_filename.lua`** | `script-opts/title_filename.conf` | 自定义窗口标题格式，支持 UTF-8 字符精准截断 |
@@ -216,6 +257,11 @@ mpv 支持两种视频解码方式，各有适用场景：
 | **`uosc.conf`** | `script-opts/` | uosc 右键菜单外观、多语言配置、元素屏蔽黑名单（`disable_elements`） |
 | **`thumbfast.conf`** | `script-opts/` | 缩略图生成上限尺寸、绝对调用路径及本地/网络模式开关 |
 | **`visualizer.conf`** | `script-opts/` | 音频可视化类型选择、渲染画质分级与启用条件 |
+| **`quack.conf`** | `script-opts/` | 拖动进度条时的降音幅度与恢复时长 |
+| **`title_filename.conf`** | `script-opts/` | 窗口标题格式与 UTF-8 截断参数 |
+| **`playlistmanager.conf`** | `script-opts/` | 播放列表管理器行为 |
+| **`autoload.conf`** | `script-opts/` | 目录递归深度与文件隐藏过滤规则 |
+| **`stats.conf`** | `script-opts/` | 性能统计面板悬浮停留时间及边距控制 |
 
 ---
 
