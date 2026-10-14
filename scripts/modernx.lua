@@ -645,7 +645,9 @@ function render_elements(master_ass)
                     elem_ass:append(tooltiplabel)
                     
                     -- 最核心：在这里向 Thumbfast 发出“生成某时间点缩略图”的呼叫指令
-                    if not thumbfast.disabled then
+                    -- 检测到网络流 (http/https/ytdl) 时自动跳过缩略图衬底绘制
+						local is_net = mp.get_property_bool("demuxer-via-network", false)
+						if not thumbfast.disabled and not is_net then
                         local osd_w = mp.get_property_number("osd-width")
                         if osd_w then
                             local r_w, r_h = get_virt_scale_factor()
